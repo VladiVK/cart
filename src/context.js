@@ -20,6 +20,9 @@ const REMOVE_ITEM = 'REMOVE_ITEM';
 const INCREASE = 'INCREASE'
 const DECREASE = 'DECREASE'
 const GET_TOTAL = 'GET_TOTAL'
+const LOADING = 'LOADING'
+const DISPLAY_ITEMS = 'DISPLAY_ITEMS'
+const TOGGLE_AMOUNT = 'TOGGLE_AMOUNT'
 
 const AppProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -45,6 +48,28 @@ const AppProvider = ({ children }) => {
       payload: id,
     })
   }
+  const fetchData = async () => {
+
+    dispatch({type: LOADING});
+
+    const response = await fetch(url);
+    const cart = await response.json();
+
+    dispatch({type: DISPLAY_ITEMS, payload: cart})
+
+  }
+  // alternative for increse/decrease
+  const toggleAmount = (id, type) => {
+    dispatch({
+      type: TOGGLE_AMOUNT,
+      payload: {id, type},
+     })
+  }
+  // useEffect
+  useEffect(() => {
+    fetchData()
+  }, [])
+
   useEffect( () => {
     dispatch({
       type: GET_TOTAL
@@ -60,6 +85,7 @@ const AppProvider = ({ children }) => {
         removeItem,
         increase,
         decrease,
+        toggleAmount,
       }}
     >
       {children}

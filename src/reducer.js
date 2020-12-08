@@ -45,12 +45,58 @@ const reducer = (state, action) => {
 
             total = parseFloat(total.toFixed(2));
 
-            return {...state, total, amount};
-            
+            return {
+                ...state,
+                total,
+                amount
+        };
+        case 'LOADING': return {
+                ...state,
+                loading: true,
+        }    
+        case 'DISPLAY_ITEMS': return {
+                ...state,
+                loading: false,
+                cart: action.payload,
+        }    
+        case 'TOGGLE_AMOUNT': return {
+                // ...state,
+                // cart: state.cart.map( (cartItem) => {
+                //     const {id, type} = action.payload;
+                //     if(cartItem.id === id && type === 'inc') {
+                //         return {...cartItem, amount: cartItem.amount + 1}
+                //     }
+                //     if(cartItem.id === id && type === 'dec') {
+                //         return {...cartItem, amount: cartItem.amount - 1}
+                //     }
+
+                //     return cartItem;
+                // }).filter( cartItem => cartItem.amount !== 0)
+                ...state,
+                cart: state.cart.map( (cartItem) => {
+                    const {id, type} = action.payload;
+
+                    if(cartItem.id === id ) {
+                        if(type === 'inc') {
+                            return {...cartItem, amount: cartItem.amount + 1}
+                        }
+                        if(type === 'dec') {
+                            return {...cartItem, amount: cartItem.amount - 1}
+                        }   
+                    }
+                   
+                    return cartItem;
+                }).filter( cartItem => cartItem.amount !== 0)
+        }    
     
-        default: return state
+        // default: return state
+        default: throw new Error('no matching action type')
     }
 
 }
 
 export default reducer;
+
+
+
+
